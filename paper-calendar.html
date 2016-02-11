@@ -171,7 +171,7 @@
       is: 'paper-calendar',
       properties: {
         /**
-         * The currently selected month (1-12) 
+         * The currently selected month (1-12)
          */
         currentMonth: {
           type: Number
@@ -265,9 +265,17 @@
           return;
         }
         if (!this._withinValidRange(date)) {
-          console.warn('Date outside of valid range: ' + date);
-          this.date = oldValue;
-          return;
+          if (this.minDate && date < this.minDate) {
+            date = this.minDate;
+          } else {
+            if (this.maxDate && date > this.maxDate) {
+              date = this.maxDate
+            } else {
+              console.warn('Date outside of valid range: ' + date);
+              this.date = date = oldValue;
+              return;
+            }
+          }
         }
         this.currentYear = date.getFullYear();
         this.currentMonth = date.getMonth() + 1;
@@ -359,7 +367,7 @@
         } else {
           this._nextMonth();
         }
-      }, 
+      },
       _onTrack: function(event) {
         var dx = event.detail.dx;
         var dy = event.detail.dy;
@@ -519,7 +527,7 @@
         }
         this._scrollWidth = (this.$.calendar.offsetWidth * this._months.length);
         this.$.months.style.minWidth = this._scrollWidth + 'px';
-        var i = ((this.currentYear * 12) + this.currentMonth) - 
+        var i = ((this.currentYear * 12) + this.currentMonth) -
                  ((this._months[0].year * 12) + this._months[0].month);
         this._translateX(-i * this._containerWidth);
       },
@@ -589,7 +597,7 @@
         return moment.isDate(date)
             && (!this.minDate || date >= this.minDate)
             && (!this.maxDate || date <= this.maxDate);
-      } 
+      }
     });
    })();
   </script>
